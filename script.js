@@ -83,8 +83,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const img = document.createElement("img");
     img.classList.add("trail-image");
 
-    const random = Math.floor(Math.random() - 0.5) * 50;
-    img.src - image[randomIndex];
+    const randomIndex = Math.floor(Math.random() * images.length); // Fix randomIndex
+    const rotation = Math.random() * 360; // Define rotation
+    img.src = images[randomIndex]; // Fix incorrect src assignment
 
     const rect = container.getBoundingClientRect();
     const relativeX = mouseX - rect.left;
@@ -92,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     img.style.left = `${relativeX}px`;
     img.style.top = `${relativeY}px`;
-    img.style.transform = `translate(-50%, -50%) rotate($(rotation)deg) scale(0) `;
+    img.style.transform = `translate(-50%, -50%) rotate(${rotation}deg) scale(0)`; // Fix template literal
     img.style.transition = `transform ${config.inDuration}ms ${config.inEasing}`;
 
     container.appendChild(img);
@@ -103,9 +104,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     trail.push({
       element: img,
-      rotation,
-      rotation,
-      removealTime: Date.now() + config.imageLifespan,
+      rotation, // Fix duplicate key
+      removalTime: Date.now() + config.imageLifespan, // Fix typo
     });
   };
 
@@ -158,46 +158,52 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  window.addEventListener("scroll", () => {
-    isCursorInContainer = InContainer(mouseX, mouseY);
+  window.addEventListener(
+    "scroll",
+    () => {
+      isCursorInContainer = InContainer(mouseX, mouseY);
 
-    if (isCursorInContainer) {
-      isMoving = true;
-      lastMouseX += (Math.random() - 0.5) * 10;
-      clearTimeout(window.scrollTimeout);
-      window.scrollTimeout = setTimeout(() => {
-        isMoving = false;
-      }, 100);
-    }
-  }, { pasive: false } );
+      if (isCursorInContainer) {
+        isMoving = true;
+        lastMouseX += (Math.random() - 0.5) * 10;
+        clearTimeout(window.scrollTimeout);
+        window.scrollTimeout = setTimeout(() => {
+          isMoving = false;
+        }, 100);
+      }
+    },
+    { passive: false } // Fix typo in passive option
+  );
 
-  window.addEventListener("scroll", () => {
-    const now = Date.now();
-    isScrolling = true;
+  window.addEventListener(
+    "scroll",
+    () => {
+      const now = Date.now();
+      isScrolling = true;
 
-    if ( now - lastScrollTime >= config.scrollThreshold) return;
+      if (now - lastScrollTime < config.scrollThreshold) return; // Fix condition
 
-    lastScrollTIme = now;
+      lastScrollTime = now; // Fix typo
 
-    if(!scrollTicking){
+      if (!scrollTicking) {
         requestAnimationFrame(() => {
-            if(!isScrolling) {
-                createScrollTrailImage();
-                isScrolling = false;
-            }
-            scrollTicking = false;
+          if (!isScrolling) {
+            createScrollTrailImage();
+            isScrolling = false;
+          }
+          scrollTicking = false;
         });
         scrollTicking = true;
-    }
-  }, { passive: true });
-
+      }
+    },
+    { passive: true }
+  );
 
   const animate = () => {
-      createTrailImage();
-      removeOldImages();
-      requestAnimationFrame(animate);
+    createTrailImage();
+    removeOldImages();
+    requestAnimationFrame(animate);
   };
 
   animate();
-
 });
