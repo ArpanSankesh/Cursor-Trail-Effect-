@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Boldonse&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+
 * {
     margin: 0;
     padding: 0;
@@ -9,3 +11,31 @@ html, body {
     width: 100%;
 }
 
+section{
+    font-family: "Boldonse", system-ui;
+    font-family: "Josefin Sans", sans-serif;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%; 
+    overflow: hidden;
+}
+section:nth-child(1){
+    background-color: #FFF6E9;
+}
+section:nth-child(3){
+    background-color: #b8e6ff;
+}
+
+h1{
+    user-select: none;
+    font-size: 5vw;
+}
+h3{
+    text-transform: uppercase;
+    user-select: none;
+    font-size: 1vw;
+    text-align: center;
+}
