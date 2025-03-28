@@ -1,9 +1,9 @@
-import Lenis from "lenis";
-
 document.addEventListener("DOMContentLoaded", () => {
-  const Lenis = new Lenis({ autoRaf: true });
-
   const container = document.querySelector(".trail-container");
+  if (!container) {
+    console.error("Error: .trail-container element not found in the DOM.");
+    return;
+  }
 
   const config = {
     imageCount: 35,
@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
     (_, i) => `assets/${i + 1}.jpg`
   );
 
+
   const trail = [];
 
   let mouseX = 0,
@@ -36,6 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
     lastScrollTime = 0;
   let isScrolling = false,
     scrollTicking = false;
+
 
   const InContainer = (x, y) => {
     const rect = container.getBoundingClientRect();
@@ -81,11 +83,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const createImage = () => {
     const img = document.createElement("img");
-    img.classList.add("trail-image");
+    img.classList.add("img-trail");
 
-    const randomIndex = Math.floor(Math.random() * images.length); // Fix randomIndex
-    const rotation = Math.random() * 360; // Define rotation
-    img.src = images[randomIndex]; // Fix incorrect src assignment
+    const randomIndex = Math.floor(Math.random() * images.length);
+    const rotation = Math.random() * 360;
+    img.src = images[randomIndex];
+
+    img.onerror = () => {
+      console.error(`Error: Failed to load image at ${img.src}`);
+    };
 
     const rect = container.getBoundingClientRect();
     const relativeX = mouseX - rect.left;
@@ -93,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     img.style.left = `${relativeX}px`;
     img.style.top = `${relativeY}px`;
-    img.style.transform = `translate(-50%, -50%) rotate(${rotation}deg) scale(0)`; // Fix template literal
+    img.style.transform = `translate(-50%, -50%) rotate(${rotation}deg) scale(0)`;
     img.style.transition = `transform ${config.inDuration}ms ${config.inEasing}`;
 
     container.appendChild(img);
@@ -104,8 +110,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     trail.push({
       element: img,
-      rotation, // Fix duplicate key
-      removalTime: Date.now() + config.imageLifespan, // Fix typo
+      rotation,
+      removalTime: Date.now() + config.imageLifespan,
     });
   };
 
@@ -172,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 100);
       }
     },
-    { passive: false } // Fix typo in passive option
+    { passive: false }
   );
 
   window.addEventListener(
@@ -181,9 +187,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const now = Date.now();
       isScrolling = true;
 
-      if (now - lastScrollTime < config.scrollThreshold) return; // Fix condition
+      if (now - lastScrollTime < config.scrollThreshold) return;
 
-      lastScrollTime = now; // Fix typo
+      lastScrollTime = now;
 
       if (!scrollTicking) {
         requestAnimationFrame(() => {
@@ -207,3 +213,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
   animate();
 });
+
